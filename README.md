@@ -28,18 +28,20 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 - [ ] Set up a Python virtual environment.
 - [ ] Install required libraries:
   - `python-can` (for generic CAN bus communication).
+  - `udsoncan` (for handling UDS diagnostics).
   - `cantools` (for parsing and creating DBC files).
   - `can-utils` (if running on a Linux VM for `candump`, `cansniffer`, `cansend`).
 
 ### Phase 3: Capturing Real-time Data & DBC Development
 - [ ] Connect the CANable to the vehicle's OBD2 port and bring up the CAN interface.
-- [ ] Log raw CAN traffic while performing specific vehicle actions (e.g., pressing the accelerator, turning the steering wheel, toggling lights).
+- [ ] Establish a baseline of idle CAN traffic.
+- [ ] Isolate single actions and log raw CAN traffic for each system we want to analyze (e.g., pedal position, lights, steering, wheel speed, engine rpm, transmission, etc.).
 - [ ] Analyze the logs (using `cansniffer` or Python scripts) to identify changing bytes correlated to physical actions.
 - [ ] Iteratively build a `.dbc` file using `cantools` or a DBC editor mapping the identified CAN IDs and byte ranges to human-readable signals.
 - [ ] Write a Python script to consume the `.dbc` file and output live, decoded vehicle metrics.
 
 ### Phase 4: Diagnostic Trouble Codes (DTCs) Management
-- [ ] Implement an OBD2/UDS client script using `python-can`.
+- [ ] Implement an OBD2/UDS client script using `udsoncan`.
 - [ ] **Read DTCs:** Send a diagnostic request (e.g., OBD2 Service 03) to the Engine Control Unit (ECU) (typically CAN ID `0x7DF` for broadcast or `0x7E0` for the specific node) and parse the multiframe ISO-TP response to extract DTCs.
 - [ ] **Clear DTCs:** Send the diagnostic request (e.g., OBD2 Service 04) to clear the stored emission-related diagnostic information.
 - [ ] Wrap these functionalities into a Command Line Interface (CLI) for easy field use.
