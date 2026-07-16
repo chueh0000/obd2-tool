@@ -20,6 +20,7 @@ def main():
     try:
         logger.start()
         print("\n--- TURN SIGNALS & HAZARDS LOGGING ---")
+        print("Prerequisite: Key ON (Accessory or Active) mode.")
         
         logger.prompt_and_log("Turn LEFT signal ON.", "START: Left Signal ON")
         logger.prompt_and_log("Turn LEFT signal OFF.", "END: Left Signal OFF")

@@ -20,6 +20,7 @@ def main():
     try:
         logger.start()
         print("\n--- GEAR SHIFTING LOGGING ---")
+        print("Prerequisite: Key ON. Engine ON may be required to shift out of Park depending on the vehicle.")
         print("We will use a dynamic prompt to support PRNDL, PRND2L, buttons, etc.")
         
         logger.prompt_and_log("Ensure vehicle is currently in Park (or Neutral if manual).", "START: Baseline Gear")

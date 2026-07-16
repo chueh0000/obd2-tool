@@ -21,6 +21,7 @@ def main():
     try:
         logger.start()
         print("\n--- BRAKES SYSTEM LOGGING ---")
+        print("Prerequisite: Vehicle should be in Key ON (Accessory or Active) mode.")
         
         # Action A: Digital (Brake Switch)
         print("\n[ACTION A - DIGITAL: Brake Switch]")

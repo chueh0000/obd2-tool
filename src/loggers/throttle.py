@@ -20,6 +20,7 @@ def main():
     try:
         logger.start()
         print("\n--- THROTTLE SYSTEM LOGGING ---")
+        print("Prerequisite: Key ON, Engine OFF (Accessory Mode) is recommended for safety, though Engine ON works.")
         
         logger.prompt_and_log(
             "Get ready. Next, you will TAP the gas pedal lightly.",

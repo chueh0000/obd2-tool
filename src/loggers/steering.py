@@ -20,6 +20,7 @@ def main():
     try:
         logger.start()
         print("\n--- STEERING SYSTEM LOGGING ---")
+        print("Prerequisite: Engine/Motor ON (Active mode) is recommended to enable power steering.")
         
         logger.prompt_and_log("Start with the steering wheel perfectly CENTERED.", "START: Steering Centered")
         
