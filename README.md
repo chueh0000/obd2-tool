@@ -6,8 +6,11 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 
 - **Host Machine:** M-series Mac or Linux Virtual Machine
 - **CAN Interface:** MKS CANable v2.0 Pro
-- **Connector:** OBD2 Pigtail to CAN interface
-- **Firmware:** [Elmue/CANable-2.5-firmware-Slcan-and-Candlelight](https://github.com/Elmue/CANable-2.5-firmware-Slcan-and-Candlelight)
+- **Connector:** OBD2 Pigtail to CAN interface 
+- **Firmware:** Stock `canable2` firmware (`16e7497-dirty github.com/normaldotcom/canable2.git` in SLCAN mode)
+  - Try [Elmue/CANable-2.5-firmware-Slcan-and-Candlelight](https://github.com/Elmue/CANable-2.5-firmware-Slcan-and-Candlelight) if:
+    - You are on Windows and having USB driver stability issues.
+    - You are working with high-bandwidth CAN-FD (Flexible Data-rate) and experiencing frame drops.
 
 ## Project Goals
 
@@ -20,9 +23,10 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 ## Implementation Plan
 
 ### Phase 1: Hardware & Firmware Setup
-- [ ] Flash the MKS CANable v2.0 Pro with `Candlelight` or `slcan` firmware (Candlelight is generally preferred for Linux SocketCAN compatibility; slcan is often easier for Mac environments).
-- [ ] Wire the OBD2 Pigtail to the CANable interface (CAN High to Pin 6, CAN Low to Pin 14 of the OBD2 connector).
-- [ ] Verify host machine recognition (e.g., via `/dev/cu.usbmodem*` on Mac or `ip link show can0` on Linux).
+- [x] Flash / verify the MKS CANable v2.0 Pro with `slcan` firmware (stock `canable2` firmware is verified and running).
+- [x] Wire the OBD2 Pigtail to the CANable interface (CAN High to Pin 6, CAN Low to Pin 14 of the OBD2 connector, GND to Pin 4/5).
+    - GND to Pin 5 (Signal GND) is recommended.
+- [x] Verify host machine recognition (verified at `/dev/cu.usbmodem209B368539451` on macOS).
 
 ### Phase 2: Software Environment Setup
 - [ ] Set up a Python virtual environment.
