@@ -29,12 +29,9 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 - [x] Verify host machine recognition (verified at `/dev/cu.usbmodem209B368539451` on macOS).
 
 ### Phase 2: Software Environment Setup
-- [ ] Set up a Python virtual environment.
-- [ ] Install required libraries:
-  - `python-can` (for generic CAN bus communication).
-  - `udsoncan` (for handling UDS diagnostics).
-  - `cantools` (for parsing and creating DBC files).
-  - `can-utils` (if running on a Linux VM for `candump`, `cansniffer`, `cansend`).
+- [x] Set up a Python virtual environment (`.venv`).
+- [x] Install required libraries (`python-can`, `udsoncan`, `cantools`, `can-isotp`, `pyserial`).
+- [x] Verify library imports and environment functionality.
 
 ### Phase 3: Capturing Real-time Data & DBC Development
 - [ ] Connect the CANable to the vehicle's OBD2 port and bring up the CAN interface.
