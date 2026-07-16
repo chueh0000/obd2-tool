@@ -34,12 +34,33 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 - [x] Verify library imports and environment functionality.
 
 ### Phase 3: Capturing Real-time Data & DBC Development
-- [ ] Connect the CANable to the vehicle's OBD2 port and bring up the CAN interface.
-- [ ] Establish a baseline of idle CAN traffic.
-- [ ] Isolate single actions and log raw CAN traffic for each system we want to analyze (e.g., pedal position, lights, steering, wheel speed, engine rpm, transmission, etc.).
-- [ ] Analyze the logs (using `cansniffer` or Python scripts) to identify changing bytes correlated to physical actions.
-- [ ] Iteratively build a `.dbc` file using `cantools` or a DBC editor mapping the identified CAN IDs and byte ranges to human-readable signals.
-- [ ] Write a Python script to consume the `.dbc` file and output live, decoded vehicle metrics.
+
+This phase focuses on logging raw vehicle CAN traffic and reverse-engineering the signals into a custom Database CAN (.dbc) file.
+
+**Step 3.1: Connection & Baseline Logging**
+- [ ] Connect the CANable v2.0 Pro to the vehicle's OBD2 port (vehicle in ON/ACCESSORY mode).
+- [ ] Write `src/sniff.py` utilizing `python-can` to read raw CAN frames from the slcan interface.
+- [ ] Execute `src/sniff.py` to capture a baseline log (`logs/baseline_idle.asc` or `.csv`) of idle CAN traffic for 60 seconds without physical interaction.
+- **Verification:** Confirm the log file is generated, non-empty, and contains a consistent stream of recurring CAN IDs.
+
+**Step 3.2: Action-Specific Data Capture**
+- [ ] Develop `src/logger.py` to support tagged logging sessions (e.g., `python src/logger.py --tag brake_pedal`).
+- [ ] Perform and log isolated physical actions sequentially, saving each to its own file (e.g., `logs/action_brake_pedal.asc`).
+- **Verification:** Ensure each action log is cleanly isolated and stored in the `logs/` directory.
+
+**Step 3.3: Data Analysis & Signal Identification**
+- [ ] Write `src/analyze.py` to filter out baseline idle traffic and highlight changing bytes across action logs.
+- [ ] Analyze the filtered logs to isolate the specific CAN IDs and data payloads correlating to physical actions.
+- **Verification:** Successfully identify and document at least one specific signal mapping (CAN ID, start bit, length, endianness).
+
+**Step 3.4: Iterative DBC File Creation**
+- [ ] Initialize `dbc/custom_vehicle.dbc` using `cantools`.
+- [ ] Define messages and signals in the DBC file based on the analysis from Step 3.3.
+- **Verification:** Use `cantools` to parse the DBC file and confirm there are no syntax or formatting errors.
+
+**Step 3.5: Live Decoding Validation**
+- [ ] Write `src/decode.py` to consume the raw CAN bus stream and decode the frames in real-time using `dbc/custom_vehicle.dbc`.
+- **Verification:** Run `src/decode.py` while physically interacting with the vehicle to see human-readable signal changes printed to the console.
 
 ### Phase 4: Diagnostic Trouble Codes (DTCs) Management
 - [ ] Implement an OBD2/UDS client script using `udsoncan`.
