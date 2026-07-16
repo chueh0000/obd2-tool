@@ -40,8 +40,6 @@ class GuidedLogger:
     def log_action(self, action_description):
         if self.start_time is None:
             return
-        # Calculate relative timestamp for the event
-        rel_time = time.time() - self.start_time
         # In ASCWriter, log_event expects text
         self.logger.log_event(f"ACTION: {action_description}", timestamp=time.time())
         print(f"\n---> RECORDED EVENT: {action_description}\n")
