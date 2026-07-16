@@ -38,10 +38,13 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 This phase focuses on logging raw vehicle CAN traffic and reverse-engineering the signals into a custom Database CAN (.dbc) file.
 
 **Step 3.1: Connection & Baseline Logging**
-- [ ] Connect the CANable v2.0 Pro to the vehicle's OBD2 port (vehicle in ON/ACCESSORY mode).
-- [ ] Write `src/sniff.py` utilizing `python-can` to read raw CAN frames from the slcan interface.
-- [ ] Execute `src/sniff.py` to capture a baseline log (`logs/baseline_idle.asc` or `.csv`) of idle CAN traffic for 60 seconds without physical interaction.
-- **Verification:** Confirm the log file is generated, non-empty, and contains a consistent stream of recurring CAN IDs.
+- [ ] Connect the CANable v2.0 Pro to the vehicle's OBD2 port.
+- [x] Write `src/sniff.py` utilizing `python-can` to read raw CAN frames from the slcan interface.
+- [ ] Execute `src/sniff.py` to capture three distinct 60-second baselines without physical interaction:
+  - **Baseline 1 (Accessory):** Key ON, Engine/Motor OFF (`logs/baseline_accessory.asc`).
+  - **Baseline 2 (Active):** Powertrain Active, Parked (`logs/baseline_active.asc`).
+  - **Baseline 3 (Sleep):** Dead Silence, vehicle off and asleep (`logs/baseline_sleep.asc`).
+- **Verification:** Confirm the log files are generated, non-empty, and contain a consistent stream of recurring CAN IDs relevant to each vehicle state.
 
 **Step 3.2: Action-Specific Data Capture**
 - [ ] Develop `src/logger.py` to support tagged logging sessions (e.g., `python src/logger.py --tag brake_pedal`).
