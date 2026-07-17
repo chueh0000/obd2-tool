@@ -6,7 +6,7 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
 
 - **Host Machine:** M-series Mac or Linux Virtual Machine
 - **CAN Interface:** MKS CANable v2.0 Pro
-- **Connector:** OBD2 Pigtail to CAN interface 
+- **Connector:** OBD2 Male Pigtail to CAN interface 
 - **Firmware:** Stock `canable2` firmware (`16e7497-dirty github.com/normaldotcom/canable2.git` in SLCAN mode)
   - Try [Elmue/CANable-2.5-firmware-Slcan-and-Candlelight](https://github.com/Elmue/CANable-2.5-firmware-Slcan-and-Candlelight) if:
     - You are on Windows and having USB driver stability issues.
