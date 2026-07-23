@@ -15,11 +15,11 @@ This guide details the remaining steps required to complete Phase 3. You will be
 
 1. Connect the OBD2 pigtail to the vehicle's diagnostic port.
 2. Ensure the vehicle is completely OFF (Sleep Mode).
-3. Run: `python src/sniff.py --output logs/baseline_sleep.asc` (Wait 60s).
+3. Run: `python src/reverse_engineering/sniff.py --output logs/baseline_sleep.asc` (Wait 60s).
 4. Turn the key to Accessory Mode (Engine OFF).
-5. Run: `python src/sniff.py --output logs/baseline_accessory.asc` (Wait 60s).
+5. Run: `python src/reverse_engineering/sniff.py --output logs/baseline_accessory.asc` (Wait 60s).
 6. Turn the Engine ON (Powertrain Active, Parked).
-7. Run: `python src/sniff.py --output logs/baseline_active.asc` (Wait 60s).
+7. Run: `python src/reverse_engineering/sniff.py --output logs/baseline_active.asc` (Wait 60s).
 
 ---
 
@@ -47,7 +47,7 @@ Move back to your desk. For each system, run the analysis script comparing the a
 **Example (Brakes):**
 Since braking was likely logged in Active Mode, compare it against the active baseline:
 ```bash
-python src/analyze.py --baseline logs/baseline_active.asc --action logs/brakes_guided.asc
+python src/reverse_engineering/analyze.py --baseline logs/baseline_active.asc --action logs/brakes_guided.asc
 ```
 
 The script will output something like:
@@ -81,7 +81,7 @@ In this hypothetical example, Byte 3 is the digital Brake Switch, and Byte 5 is 
 1. Connect back to the active vehicle.
 2. Run the live decoder:
    ```bash
-   python src/decode.py --dbc dbc/custom_vehicle.dbc
+   python src/reverse_engineering/decode.py --dbc dbc/custom_vehicle.dbc
    ```
 3. Physically interact with the vehicle (e.g., press the brakes, turn the steering wheel).
 4. Watch the console output. You should see human-readable updates like:

@@ -39,20 +39,20 @@ This phase focuses on logging raw vehicle CAN traffic and reverse-engineering th
 
 **Step 3.1: Connection & Baseline Logging**
 - [ ] Connect the CANable v2.0 Pro to the vehicle's OBD2 port.
-- [x] Write `src/sniff.py` utilizing `python-can` to read raw CAN frames from the slcan interface.
-- [ ] Execute `src/sniff.py` to capture three distinct 60-second baselines without physical interaction:
+- [x] Write `src/reverse_engineering/sniff.py` utilizing `python-can` to read raw CAN frames from the slcan interface.
+- [ ] Execute `src/reverse_engineering/sniff.py` to capture three distinct 60-second baselines without physical interaction:
   - **Baseline 1 (Accessory):** Key ON, Engine/Motor OFF (`logs/baseline_accessory.asc`).
   - **Baseline 2 (Active):** Powertrain Active, Parked (`logs/baseline_active.asc`).
   - **Baseline 3 (Sleep):** Dead Silence, vehicle off and asleep (`logs/baseline_sleep.asc`).
 - **Verification:** Confirm the log files are generated, non-empty, and contain a consistent stream of recurring CAN IDs relevant to each vehicle state.
 
 **Step 3.2: Action-Specific Data Capture**
-- [ ] Develop `src/logger.py` to support tagged logging sessions (e.g., `python src/logger.py --tag brake_pedal`).
+- [ ] Develop `src/core/logger_base.py` to support tagged logging sessions (e.g., `python src/logger_base.py --tag brake_pedal`).
 - [ ] Perform and log isolated physical actions sequentially, saving each to its own file (e.g., `logs/action_brake_pedal.asc`).
 - **Verification:** Ensure each action log is cleanly isolated and stored in the `logs/` directory.
 
 **Step 3.3: Data Analysis & Signal Identification**
-- [ ] Write `src/analyze.py` to filter out baseline idle traffic and highlight changing bytes across action logs.
+- [ ] Write `src/reverse_engineering/analyze.py` to filter out baseline idle traffic and highlight changing bytes across action logs.
 - [ ] Analyze the filtered logs to isolate the specific CAN IDs and data payloads correlating to physical actions.
 - **Verification:** Successfully identify and document at least one specific signal mapping (CAN ID, start bit, length, endianness).
 
@@ -62,8 +62,8 @@ This phase focuses on logging raw vehicle CAN traffic and reverse-engineering th
 - **Verification:** Use `cantools` to parse the DBC file and confirm there are no syntax or formatting errors.
 
 **Step 3.5: Live Decoding Validation**
-- [ ] Write `src/decode.py` to consume the raw CAN bus stream and decode the frames in real-time using `dbc/custom_vehicle.dbc`.
-- **Verification:** Run `src/decode.py` while physically interacting with the vehicle to see human-readable signal changes printed to the console.
+- [ ] Write `src/reverse_engineering/decode.py` to consume the raw CAN bus stream and decode the frames in real-time using `dbc/custom_vehicle.dbc`.
+- **Verification:** Run `src/reverse_engineering/decode.py` while physically interacting with the vehicle to see human-readable signal changes printed to the console.
 
 ### Phase 4: Diagnostic Trouble Codes (DTCs) Management
 - [ ] Implement an OBD2/UDS client script using `udsoncan`, ensuring fallback support for ISO 15031 if UDS is not supported.
@@ -78,9 +78,13 @@ This phase focuses on logging raw vehicle CAN traffic and reverse-engineering th
 ├── requirements.txt        # Python dependencies
 ├── dbc/
 │   └── custom_vehicle.dbc  # Custom DBC file developed during Phase 3
+├── data/
+│   └── obd2_codes.json
 ├── src/
-│   ├── sniff.py            # Script for capturing and logging CAN traffic
-│   ├── decode.py           # Script for live-decoding using the DBC file
-│   └── diagnostics.py      # Script for reading and clearing DTCs
-└── logs/                   # Directory for storing raw CAN dumps
+│   ├── core/
+│   ├── diagnostics/
+│   ├── reverse_engineering/
+│   └── loggers/
+├── tests/
+├── logs/                   # Directory for storing raw CAN dumps
 ```

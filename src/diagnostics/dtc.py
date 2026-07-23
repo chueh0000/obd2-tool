@@ -4,10 +4,11 @@ import os
 import json
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from diagnostics import DiagnosticsClient
+from diagnostics_client import DiagnosticsClient
 
 def load_dtc_db():
-    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'obd2_codes.json')
+    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    db_path = os.path.join(base_dir, 'data', 'obd2_codes.json')
     if os.path.exists(db_path):
         with open(db_path, 'r') as f:
             try:

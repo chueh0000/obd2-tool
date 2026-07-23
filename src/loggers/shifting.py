@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from logger_base import GuidedLogger
+from core.logger_base import GuidedLogger
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Guided CAN logger for Gear Shifting.")
