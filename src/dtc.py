@@ -1,9 +1,49 @@
 import argparse
 import sys
 import os
+import json
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from diagnostics import DiagnosticsClient
+
+def load_dtc_db():
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'obd2_codes.json')
+    if os.path.exists(db_path):
+        with open(db_path, 'r') as f:
+            try:
+                return json.load(f)
+            except Exception as e:
+                print(f"Failed to parse obd2_codes.json: {e}")
+                return []
+    return []
+
+def lookup_dtc_desc(dtc_db, code_str):
+    search_code = ""
+    if "(Status:" in code_str:
+        raw_hex = code_str.split(" ")[0]
+        if len(raw_hex) == 6:
+            high_byte = int(raw_hex[0:2], 16)
+            low_byte = int(raw_hex[2:4], 16)
+            system = (high_byte >> 6) & 0x03
+            sys_char = ['P', 'C', 'B', 'U'][system]
+            digit1 = (high_byte >> 4) & 0x03
+            digit2 = high_byte & 0x0F
+            digit3 = (low_byte >> 4) & 0x0F
+            digit4 = low_byte & 0x0F
+            search_code = f"{sys_char}{digit1}{digit2:X}{digit3:X}{digit4:X}"
+    else:
+        search_code = code_str
+
+    if not search_code:
+        return None
+        
+    for entry in dtc_db:
+        db_code = entry.get('Code', '')
+        # some codes in db look like "P0001/SAE" or "P0001"
+        if db_code.startswith(search_code):
+            return entry.get('Description', 'Unknown Description')
+            
+    return None
 
 def parse_args():
     parser = argparse.ArgumentParser(description="OBD2/UDS Diagnostic Trouble Code (DTC) Client.")
@@ -22,6 +62,8 @@ def main():
     tx_id = int(args.tx, 0)
     rx_id = int(args.rx, 0)
     status_mask = int(args.status_mask, 0)
+    
+    dtc_db = load_dtc_db()
     
     client = DiagnosticsClient(
         interface=args.interface,
@@ -42,7 +84,11 @@ def main():
             if dtcs:
                 print("\n=== Found DTCs ===")
                 for dtc in dtcs:
-                    print(f" - {dtc}")
+                    desc = lookup_dtc_desc(dtc_db, dtc)
+                    if desc:
+                        print(f" - {dtc} : {desc}")
+                    else:
+                        print(f" - {dtc} : (No standard definition found)")
                 print("==================\n")
             else:
                 print("\nNo DTCs found or request failed.\n")
