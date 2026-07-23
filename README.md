@@ -18,7 +18,7 @@ This project provides a comprehensive toolset for analyzing CAN bus data, develo
    - Capture real-time data from an unsupported vehicle's CAN bus.
    - Reverse-engineer CAN frames and develop a custom DBC (Database CAN) file to decode proprietary vehicle signals.
 2. **Vehicle Diagnostics:**
-   - Query, read, and clear Diagnostic Trouble Codes (DTCs) over the CAN network using standard OBD2 (Mode 03, 04, 07) or UDS (Unified Diagnostic Services) protocols.
+   - Query, read, and clear Diagnostic Trouble Codes (DTCs) over the CAN network using standard UDS (Unified Diagnostic Services) protocols, falling back to ISO 15031 (standard OBD2 Modes 03, 04, 07) if UDS is unsupported by the vehicle.
 
 ## Implementation Plan
 
@@ -66,7 +66,7 @@ This phase focuses on logging raw vehicle CAN traffic and reverse-engineering th
 - **Verification:** Run `src/decode.py` while physically interacting with the vehicle to see human-readable signal changes printed to the console.
 
 ### Phase 4: Diagnostic Trouble Codes (DTCs) Management
-- [ ] Implement an OBD2/UDS client script using `udsoncan`.
+- [ ] Implement an OBD2/UDS client script using `udsoncan`, ensuring fallback support for ISO 15031 if UDS is not supported.
 - [ ] **Read DTCs:** Send a diagnostic request (e.g., OBD2 Service 03) to the Engine Control Unit (ECU) (typically CAN ID `0x7DF` for broadcast or `0x7E0` for the specific node) and parse the multiframe ISO-TP response to extract DTCs.
 - [ ] **Clear DTCs:** Send the diagnostic request (e.g., OBD2 Service 04) to clear the stored emission-related diagnostic information.
 - [ ] Wrap these functionalities into a Command Line Interface (CLI) for easy field use.
