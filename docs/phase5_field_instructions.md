@@ -1,6 +1,6 @@
-# Phase 3: Field Execution & DBC Development Guide
+# Phase 5: Field Execution & DBC Development Guide
 
-This guide details the remaining steps required to complete Phase 3. You will be moving from the development environment to the physical vehicle to capture raw CAN data, analyze it, and build the DBC database.
+This guide details the remaining steps required to complete Phase 5. You will be moving from the development environment to the physical vehicle to capture raw CAN data, analyze it, and build the DBC database.
 
 ## Prerequisites
 - Laptop with the `.venv` activated.
