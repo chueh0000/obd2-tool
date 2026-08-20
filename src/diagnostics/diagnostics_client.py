@@ -21,9 +21,13 @@ class DiagnosticsClient:
         print(f"Connecting to {self.interface} at {self.port} ({self.baud} baud)...")
         self.bus = can.interface.Bus(interface=self.interface, channel=self.port, bitrate=self.baud)
         
-        addr = isotp.Address(isotp.AddressingMode.Normal_11bits, rxid=self.rx_id, txid=self.tx_id)
-        self.tplayer = isotp.CanStack(bus=self.bus, address=addr, error_handler=self._isotp_error_handler)
-        self.tplayer.start()
+        if self.tx_id > 0x7FF or self.rx_id > 0x7FF:
+            address_mode = isotp.AddressingMode.Normal_29bits
+        else:
+            address_mode = isotp.AddressingMode.Normal_11bits
+            
+        addr = isotp.Address(address_mode, rxid=self.rx_id, txid=self.tx_id)
+        self.tplayer = isotp.CanStack(bus=self.bus, address=addr, error_handler=self._isotp_error_handler, params={'tx_padding': 0x00})
         
         self.conn = PythonIsoTpConnection(self.tplayer)
         self.conn.open()
@@ -48,6 +52,39 @@ class DiagnosticsClient:
         digit4 = low_byte & 0x0F
         return f"{sys_char}{digit1}{digit2:X}{digit3:X}{digit4:X}"
 
+    def read_pid(self, pid: int) -> bytes:
+        try:
+            req = b'\x01' + bytes([pid])
+            self.tplayer.send(req)
+            timeout = time.time() + 2.0
+            while time.time() < timeout:
+                if self.tplayer.available():
+                    payload = self.tplayer.recv()
+                    if payload and len(payload) >= 2 and payload[0] == 0x41 and payload[1] == pid:
+                        return payload[2:]
+                time.sleep(0.01)
+        except Exception as e:
+            print(f"Error reading PID {pid:02X}: {e}")
+        return None
+
+    def get_supported_pids(self) -> list:
+        supported_pids = []
+        # Availability PIDs are 0x00, 0x20, 0x40, 0x60, 0x80, 0xA0, 0xC0
+        for base_pid in range(0x00, 0xE0, 0x20):
+            data = self.read_pid(base_pid)
+            if data and len(data) >= 4:
+                # 32-bit bitmask
+                bitmask = int.from_bytes(data[:4], byteorder='big')
+                for i in range(32):
+                    if (bitmask >> (31 - i)) & 1:
+                        supported_pids.append(base_pid + i + 1)
+                # If the bitmask for the NEXT availability PID is 0, we can stop
+                if not (bitmask & 1):
+                    break
+            else:
+                break
+        return supported_pids
+
     def read_dtcs(self, status_mask=0xFF):
         dtcs = []
         try:
@@ -69,7 +106,6 @@ class DiagnosticsClient:
             timeout = time.time() + 2.0
             payload = None
             while time.time() < timeout:
-                self.tplayer.process()
                 if self.tplayer.available():
                     payload = self.tplayer.recv()
                     break
@@ -117,7 +153,6 @@ class DiagnosticsClient:
             timeout = time.time() + 2.0
             payload = None
             while time.time() < timeout:
-                self.tplayer.process()
                 if self.tplayer.available():
                     payload = self.tplayer.recv()
                     break

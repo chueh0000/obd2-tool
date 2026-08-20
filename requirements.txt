@@ -3,3 +3,6 @@ pyserial
 cantools
 udsoncan
 can-isotp
+fastapi
+uvicorn
+websockets
